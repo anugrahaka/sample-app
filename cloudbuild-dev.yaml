@@ -1,22 +1,20 @@
-cat > ~/sample-app/cloudbuild-dev.yaml <<'EOF'
 steps:
-  - name: 'gcr.io/cloud-builders/go'
-    env: ['GOPATH=/gopath']
-    args: ['build', '-o', 'main', 'main.go']
+- name: 'gcr.io/cloud-builders/go'
+  env: ['GOPATH=/gopath']
+  args: ['build', '-o', 'main', 'main.go']
 
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-docker.pkg.dev/qwiklabs-gcp-01-b3b743658c5c/my-repository/hello-cloudbuild:v1.0', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-docker.pkg.dev/qwiklabs-gcp-01-b3b743658c5c/my-repository/hello-cloudbuild-dev:v1.0', '.']
 
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-docker.pkg.dev/qwiklabs-gcp-01-b3b743658c5c/my-repository/hello-cloudbuild:v1.0']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-docker.pkg.dev/qwiklabs-gcp-01-b3b743658c5c/my-repository/hello-cloudbuild-dev:v1.0']
 
-  - name: 'gcr.io/cloud-builders/kubectl'
-    id: 'Deploy'
-    args: ['-n', 'dev', 'apply', '-f', 'dev/deployment.yaml']
-    env:
-    - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
-    - 'CLOUDSDK_CONTAINER_CLUSTER=hello-cluster'
+- name: 'gcr.io/cloud-builders/kubectl'
+  id: 'Deploy'
+  args: ['apply', '-f', 'dev/deployment.yaml']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=hello-cluster'
 
 options:
   logging: CLOUD_LOGGING_ONLY
-EOF
